@@ -50,4 +50,4 @@ class Enemy(Sprite):
             self.movement = LEFT if self.movement == RIGHT else RIGHT
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect.x, self.rect.y)
+        screen.blit(self.image, (self.rect.x, self.rect.y))
