@@ -9,18 +9,22 @@ class BulletManager:
         self.enemy_bullets: list[Bullet] = []
 
     def update(self, game):
-        for enemy_bullet, bullet, enemy  in zip(self.enemy_bullets, self.bullets, game.enemy_manager.enemies):
+        
+        for enemy_bullet in self.enemy_bullets:
             enemy_bullet.update(self.enemy_bullets)
-            bullet.update(self.bullets)
             if enemy_bullet.rect.colliderect(game.player.rect):
-                self.enemy_bullets.remove(enemy_bullet)
-                game.playing = False
-                pygame.time.delay(1000)
-                break
-            elif bullet.rect.colliderect(enemy.rect):
-                self.bullets.remove(bullet)
-                game.enemy_manager.enemies.remove(enemy)
-                break
+                    self.enemy_bullets.remove(enemy_bullet)
+                    game.playing = False
+                    pygame.time.delay(1000)
+                    break
+        
+        for bullet in self.bullets:
+            bullet.update(self.bullets)
+            for enemy in game.enemy_manager.enemies:
+                if bullet.rect.colliderect(enemy.rect):
+                    self.bullets.remove(bullet)
+                    game.enemy_manager.enemies.remove(enemy)
+                    break
 
         #for bullet, enemy in zip(self.bullets, game.enemy_manager.enemies):
             #bullet.update(self.bullets)
@@ -30,8 +34,7 @@ class BulletManager:
                 #break
 
     def draw(self, screen):
-        for bullet_enemy, bullet in zip(self.enemy_bullets, self.bullets):
-            bullet_enemy.draw(screen)
+        for bullet in self.enemy_bullets + self.bullets:
             bullet.draw(screen)
 
         #for bullet_enemy in self.enemy_bullets:
@@ -43,6 +46,6 @@ class BulletManager:
         if bullet.owner == ENEMY_TYPE and not self.enemy_bullets:
             self.enemy_bullets.append(bullet)
             #print(self.enemy_bullets)
-        elif bullet.owner == SPACESHIP_TYPE and not self.bullets:
+        if bullet.owner == SPACESHIP_TYPE and not self.bullets:
             self.bullets.append(bullet)
             #print(self.bullets)
