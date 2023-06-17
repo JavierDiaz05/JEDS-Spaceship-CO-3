@@ -4,6 +4,7 @@ import pygame
 from game.components.enemies.enemy_manager import EnemyManger
 from game.components.menu import Menu
 from game.components.spaceship import Spaceship
+from game.components.stats import Stats
 
 from game.utils.constants import BG, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
@@ -26,7 +27,9 @@ class Game:
         self.player = Spaceship()
         self.enemy_manager = EnemyManger()
         self.bullet_manager = BulletManager()
-        self.menu = Menu("Press any key to start...")
+        self.stats = Stats()
+        self.menu = Menu("Press any key to start...", self.stats)
+
 
     def run(self):
         # Game loop: events - update - draw
@@ -39,6 +42,7 @@ class Game:
 
     def play(self):
         self.enemy_manager.reset()
+        self.stats.score = 0
         self.playing = True
         while self.playing:
             self.events()
@@ -80,18 +84,21 @@ class Game:
 
     def draw_score(self):
         font = pygame.font.Font(FONT_STYLE, 22)
-        text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        text = font.render(f"Score: {self.stats.score}", True, (255, 255, 255))
         text_rect = text.get_rect()
         text_rect.center = (1000, 50)
         self.screen.blit(text, text_rect)
 
     def show_menu(self):
-        if self.death_count > 0:
-            self.menu.update_message("Other message")
+        if self.stats.death_count > 0:
+            self.stats.update()
+            self.menu.update_message("Press any key to try again...", self.stats)
 
-        self.menu.draw(self.screen)
+        self.menu.draw(self.screen, self.stats)
         self.menu.events(self.on_close, self.play)
 
     def on_close(self):
         self.playing = False
         self.running = False
+
+
