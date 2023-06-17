@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 from game.components.bullets.bullet import Bullet
-from game.utils.constants import DEFAULT_TYPE, SCREEN_HEIGHT, SCREEN_WIDTH, SPACESHIP, SPACESHIP_TYPE
+from game.utils.constants import DEFAULT_TYPE, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, SPACESHIP, SPACESHIP_TYPE
 
 class Spaceship(Sprite):
     def __init__(self):
@@ -55,3 +55,14 @@ class Spaceship(Sprite):
     def set_image(self, size=(40, 60), image = SPACESHIP):
         self.image = image
         self.image = pygame.transform.scale(self.image, size)
+
+    def update_power_up(self, game):
+        current_time = pygame.time.get_ticks()
+
+        if self.power_up_time <= current_time and self.power_up_type != DEFAULT_TYPE:
+            self.image = pygame.transform.scale(SPACESHIP, (60, 40))
+            self.has_power_up = False
+            self.power_up_type = DEFAULT_TYPE
+            game.power_up_manager.reset()
+        elif self.has_power_up == True:
+            self.power_up_time -= 1

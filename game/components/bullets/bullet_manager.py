@@ -18,7 +18,7 @@ class BulletManager:
                         game.playing = False
                         game.stats.death_count += 1
                         pygame.time.delay(1000)
-                        break
+                    
         
         for bullet in self.bullets:
             bullet.update(self.bullets)

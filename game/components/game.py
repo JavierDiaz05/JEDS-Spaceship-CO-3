@@ -62,12 +62,14 @@ class Game:
         self.enemy_manager.update(self)
         self.bullet_manager.update(self)
         self.power_up_manager.update(self)
+        self.player.update_power_up(self)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.draw_score()
+        self.draw_power_up_time()
         self.player.draw(self.screen)
         self.enemy_manager.draw(self.screen)
         self.bullet_manager.draw(self.screen)
@@ -90,6 +92,18 @@ class Game:
         text = font.render(f"Score: {self.stats.score}", True, (255, 255, 255))
         text_rect = text.get_rect()
         text_rect.center = (1000, 50)
+        self.screen.blit(text, text_rect)
+    
+    def draw_power_up_time(self):
+        current_time = pygame.time.get_ticks()
+        if self.player.power_up_time == 0 or self.player.power_up_time <= current_time:
+            time = 0
+        else:
+            time = (self.player.power_up_time - current_time) // 1000
+        font = pygame.font.Font(FONT_STYLE, 22)
+        text = font.render(f"Power up: {time}", True, (255, 255, 255))
+        text_rect = text.get_rect()
+        text_rect.center = (100, 50)
         self.screen.blit(text, text_rect)
 
     def show_menu(self):

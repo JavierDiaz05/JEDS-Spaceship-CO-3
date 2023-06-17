@@ -8,7 +8,7 @@ class PowerUpManager:
     def __init__(self):
         self.power_ups = []
         self.when_appears = random.randint(10000, 15000)
-        self.duration = random.randint(3, 5)
+        self.duration = random.randint(3000, 5000)
 
     def add_power_up(self):
         shield = Shield()
@@ -17,7 +17,7 @@ class PowerUpManager:
     def update(self, game):
         current_time = pygame.time.get_ticks()
 
-        if len(self.power_ups) == 0 and current_time >= self.when_appears:
+        if len(self.power_ups) == 0 and current_time >= self.when_appears and game.player.has_power_up == False:
             self.add_power_up()
 
         for power_up in self.power_ups:
@@ -26,9 +26,10 @@ class PowerUpManager:
                 power_up.start_time = pygame.time.get_ticks()
                 game.player.power_up_type = power_up.type
                 game.player.has_power_up = True
-                game.player.power_up_time = power_up.start_time + (self.duration * 1000)
+                game.player.power_up_time = power_up.start_time + self.duration
                 game.player.set_image((65, 75), SPACESHIP_SHIELD)
                 self.power_ups.remove(power_up)
+
 
     def draw(self, screen):
         for power_up in self.power_ups:
