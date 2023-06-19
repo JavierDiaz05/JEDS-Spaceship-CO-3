@@ -13,6 +13,7 @@ class Spaceship(Sprite):
         self.power_up_type = DEFAULT_TYPE
         self.has_power_up = False
         self.power_up_time = 0
+        self.hearts = []
 
     def update(self, user_input, game):
         if user_input[pygame.K_LEFT]:
@@ -52,13 +53,13 @@ class Spaceship(Sprite):
         bullet = Bullet(self)
         bullet_manager.add_bullet(bullet)
 
-    def set_image(self, size=(40, 60), image = SPACESHIP):
+    def set_image(self, size=(60, 40), image = SPACESHIP):
         self.image = image
         self.image = pygame.transform.scale(self.image, size)
 
     def update_power_up(self, game):
         current_time = pygame.time.get_ticks()
-
+        
         if self.power_up_time <= current_time and self.power_up_type != DEFAULT_TYPE:
             self.image = pygame.transform.scale(SPACESHIP, (60, 40))
             self.has_power_up = False
@@ -66,3 +67,9 @@ class Spaceship(Sprite):
             game.power_up_manager.reset()
         elif self.has_power_up == True:
             self.power_up_time -= 1
+    
+    def delet_heart(self):
+        self.hearts.pop()
+
+    def reset_hearts(self):
+        self.hearts = []

@@ -7,7 +7,7 @@ from game.components.powerups.power_up_manager import PowerUpManager
 from game.components.spaceship import Spaceship
 from game.components.stats import Stats
 
-from game.utils.constants import BG, FONT_STYLE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from game.utils.constants import BG, FONT_STYLE, ICON, PLUS_LIFE, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
 
 class Game:
@@ -28,7 +28,7 @@ class Game:
         self.enemy_manager = EnemyManger()
         self.bullet_manager = BulletManager()
         self.stats = Stats()
-        self.menu = Menu("Press any key to start...", self.stats)
+        self.menu = Menu(self.stats)
         self.power_up_manager = PowerUpManager()
 
 
@@ -42,7 +42,7 @@ class Game:
         pygame.quit()
 
     def play(self):
-        self.enemy_manager.reset()
+        self.reset()
         self.stats.score = 0
         self.playing = True
         while self.playing:
@@ -70,6 +70,7 @@ class Game:
         self.draw_background()
         self.draw_score()
         self.draw_power_up_time()
+        self.draw_hearts()
         self.player.draw(self.screen)
         self.enemy_manager.draw(self.screen)
         self.bullet_manager.draw(self.screen)
@@ -106,10 +107,15 @@ class Game:
         text_rect.center = (100, 50)
         self.screen.blit(text, text_rect)
 
+    def draw_hearts(self):
+        for heart in self.player.hearts:
+            self.screen.blit(heart.plus_life_image, heart.heart_rect)
+
+
     def show_menu(self):
         if self.stats.death_count > 0:
             self.stats.update()
-            self.menu.update_message("Press any key to try again...", self.stats)
+            self.menu.update_message(self.stats)
 
         self.menu.draw(self.screen, self.stats)
         self.menu.events(self.on_close, self.play)
@@ -122,7 +128,7 @@ class Game:
         self.bullet_manager.reset()
         self.enemy_manager.reset()
         self.power_up_manager.reset()
-        self.power_up_manager.reset()
+        self.player.reset_hearts()
 
 
 
